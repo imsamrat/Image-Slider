@@ -121,3 +121,14 @@ searchBtn.addEventListener('click', function () {
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+
+document.getElementById("search").addEventListener("keyup", event => {
+  if (event.key === "Enter") searchBtn.click();
+});
+
+
+document.getElementById("duration").addEventListener("keyup", event => {
+  if (event.key === "Enter") sliderBtn.click();
+});
+
