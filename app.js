@@ -1,9 +1,12 @@
 const imagesArea = document.querySelector('.images');
 const gallery = document.querySelector('.gallery');
 const galleryHeader = document.querySelector('.gallery-header');
+const totalImage = document.querySelector('.total-image');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
+
+
 // selected image 
 let sliders = [];
 
@@ -19,16 +22,19 @@ const showImages = (images) => {
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
+  totalImage.style.display = 'flex';
+  totalSelectedImage();
   images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+    div.innerHTML = ` <img class="img-fluid img-thumbnail single-img" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
-
+  loadingSpinner();
 }
 
 const getImages = (query) => {
+  loadingSpinner();
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
@@ -38,14 +44,15 @@ const getImages = (query) => {
 let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
-  element.classList.add('added');
+  element.classList.toggle('added');
  
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    sliders.splice(item, 1);
   }
+  totalSelectedImage();
 }
 var timer
 const createSlider = () => {
@@ -132,3 +139,12 @@ document.getElementById("duration").addEventListener("keyup", event => {
   if (event.key === "Enter") sliderBtn.click();
 });
 
+const totalSelectedImage = () => {
+  document.getElementById("selected-img").innerText = sliders.length;
+}
+
+
+const loadingSpinner = () => {
+  const spinner = document.getElementById("spinner");
+  spinner.classList.toggle("display");
+}
